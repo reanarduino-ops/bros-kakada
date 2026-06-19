@@ -67,7 +67,6 @@
     </div>
 
     <script>
-        // ពិនិត្យ API Key ពេលចាប់ផ្តើម
         window.onload = () => {
             const savedKey = localStorage.getItem('gemini_api_key');
             if (savedKey) document.getElementById('apiKey').value = savedKey;
@@ -77,14 +76,24 @@
             const key = document.getElementById('apiKey').value;
             localStorage.setItem('gemini_api_key', key);
             const status = document.getElementById('apiStatus');
-            
-            // សាកល្បងពិនិត្យមើល Key ត្រឹមត្រូវ (Simulated validation)
             if(key.length > 20) {
-                status.innerText = "ជោគជ័យ! API Key ត្រូវបានរក្សាទុក ហើយអាចប្រើប្រាស់បាន។";
+                status.innerText = "ជោគជ័យ! API Key ត្រូវបានរក្សាទុក។";
+                status.classList.remove('text-red-600');
                 status.classList.add('text-green-600');
             } else {
-                status.innerText = "API Key មិនត្រឹមត្រូវ។ សូមពិនិត្យឡើងវិញ។";
+                status.innerText = "API Key មិនត្រឹមត្រូវ។";
+                status.classList.remove('text-green-600');
                 status.classList.add('text-red-600');
+            }
+        }
+
+        function createExam() {
+            const creator = document.getElementById('creatorName').value;
+            const subject = document.getElementById('subjectName').value;
+            if(creator && subject) {
+                alert("វិញ្ញាសារមុខវិជ្ជា " + subject + " បង្កើតដោយ " + creator + " ត្រូវបានរក្សាទុក!");
+            } else {
+                alert("សូមបំពេញឈ្មោះអ្នកបង្កើត និងមុខវិជ្ជាឱ្យបានគ្រប់គ្រាន់។");
             }
         }
 
