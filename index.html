@@ -1,96 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script defer src="/_vercel/insights/script.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
-    />
-    <title>Vercel HTML Starter</title>
-    <meta
-      name="description"
-      content="High-performance HTML based website template."
-    />
-  </head>
-  <body>
-    <h1>Vercel HTML Starter</h1>
-    <p>
-      This template is a simple, but powerful single
-      <code>index.html</code> file deployed to
-      <a href="https://vercel.com">Vercel</a>. When your site is deployed, all
-      static assets (like HTML, JavaScript, CSS, images, and more) are deployed
-      globally to every
-      <a href="https://vercel.com/docs/concepts/edge-network/overview"
-        >Vercel Edge Network</a
-      >
-      region.
-    </p>
-    <h2>Simple, privacy-friendly analytics</h2>
-    <p>
-      Want to understand your visitor traffic? Vercel Analytics gives you
-      first-party, privacy-friendly traffic analytics for your HTML site. This
-      template is already configured using the following script:
-    </p>
-    <pre><code>&lt;script defer src="/_vercel/insights/script.js"&gt;&lt;/script&gt;</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/analytics">Vercel Analytics</a>.
-    </p>
-    <h2>Integrated with git</h2>
-    <p>
-      Deploying updates to your site is as simple as
-      <code>git push</code> thanks to Vercel's advanced
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-      Support for GitHub, GitLab, Bitbucket is zero-configuration, and with the
-      flexible Vercel CLI and API, you can integrate with any tool possible.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-    </p>
-    <h2>Fast <code>gzip</code> compression</h2>
-    <p>
-      To help ensure the smallest possible file sizes for your static assets,
-      the Vercel Edge Network compresses files by default using
-      <code>gzip</code>. You can also optionally use
-      <code>brotli</code> compressesion if you prefer.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/edge-network/compression"
-        >compression</a
-      >.
-    </p>
-    <h2>Advanced routing configuration</h2>
-    <p>
-      Vercel gives you a variety of ways to configure the routing of your
-      website. For example, adding redirects, rewrites, or headers to your page.
-      While you can use <code>vercel.json</code> to define these through JSON,
-      you can also express your routing configuration as code using
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-    <p>
-      Middleware runs before the
-      <a href="https://vercel.com/docs/concepts/edge-network/caching"
-        >Vercel Edge Network Cache</a
-      >, so you can configure routing exactly as your application needs. For
-      example, this template uses <code>middleware.js</code> defined in the root
-      of the repository to add additional security headers to the site:
-    </p>
-    <pre><code>referrer-policy: origin-when-cross-origin
-strict-transport-security: max-age=31536000; includeSubDomains; preload
-x-content-type-options: nosniff
-x-dns-prefetch-control: on
-x-frame-options: DENY</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-  </body>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ប្រព័ន្ធគ្រប់គ្រងវិញ្ញាសារ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Khmer+OS+Muol+Light&family=Khmer+OS+Siemreap&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Khmer OS Siemreap', sans-serif; }
+        h1, h2, h3 { font-family: 'Khmer OS Muol Light', serif; }
+        #captureArea { background-color: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 md:p-10">
+    <div id="captureArea" class="max-w-4xl mx-auto border border-gray-200">
+        <!-- ផ្នែកកំណត់ API Key -->
+        <section class="mb-8 p-6 bg-white rounded-2xl border border-gray-200">
+            <h2 class="text-lg mb-4 text-blue-900">ការកំណត់ AI API Key</h2>
+            <p class="text-sm mb-4 text-gray-600">ប្រសិនបើមិនទាន់មាន សូមចុចយកឥតគិតថ្លៃនៅទីនេះ៖ 
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 underline">Google AI Studio</a>
+            </p>
+            <div class="flex gap-4">
+                <input type="password" id="apiKey" placeholder="បញ្ចូល API Key របស់អ្នក" class="w-full p-3 border rounded-xl">
+                <button onclick="saveApiKey()" class="bg-blue-600 text-white px-6 rounded-xl font-bold">រក្សាទុក</button>
+            </div>
+            <div id="apiStatus" class="mt-2 text-sm font-bold"></div>
+        </section>
+
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl text-blue-900 mb-4">ប្រព័ន្ធគ្រប់គ្រងវិញ្ញាសារ</h1>
+            <p class="text-gray-600">រៀបចំ និងធ្វើតេស្តវិញ្ញាសារដោយស្វ័យប្រវត្តិ</p>
+        </header>
+        
+        <section class="mb-10 p-8 border border-blue-100 rounded-2xl bg-blue-50/50">
+            <h2 class="text-xl mb-6 text-blue-900">ដាក់បញ្ចូលវិញ្ញាសារថ្មី</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input type="text" id="creatorName" placeholder="ឈ្មោះអ្នកបង្កើត" class="w-full p-4 border rounded-xl">
+                <input type="text" id="subjectName" placeholder="មុខវិជ្ជា" class="w-full p-4 border rounded-xl">
+            </div>
+            <button onclick="createExam()" class="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl">បង្កើតវិញ្ញាសារចូលប្រព័ន្ធ</button>
+        </section>
+
+        <section id="examContainer" class="space-y-8">
+            <div class="bg-white border border-gray-200 p-8 rounded-2xl shadow-sm">
+                <h3 class="text-lg mb-6 text-gray-800">សំណួរទី ១៖ តើ ៥ + ៥ ស្មើនឹងប៉ុន្មាន?</h3>
+                <div class="space-y-4">
+                    <label class="flex items-center space-x-4 p-5 border rounded-xl cursor-pointer">
+                        <input type="radio" name="q1" value="8" class="w-5 h-5"> <span>៨</span>
+                    </label>
+                    <label class="flex items-center space-x-4 p-5 border rounded-xl cursor-pointer">
+                        <input type="radio" name="q1" value="10" id="ans1" class="w-5 h-5"> <span>១០</span>
+                    </label>
+                </div>
+                <button onclick="checkGrade()" class="mt-8 bg-green-600 text-white px-10 py-3 rounded-xl font-bold">ពិនិត្យលទ្ធផល</button>
+            </div>
+            <div id="result" class="text-center text-xl py-6 rounded-xl hidden"></div>
+            
+            <div id="downloadSection" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                <button onclick="downloadPDF()" class="bg-red-600 text-white py-4 rounded-xl font-bold">ទាញយក PDF</button>
+                <button onclick="downloadJPG()" class="bg-purple-600 text-white py-4 rounded-xl font-bold">ទាញយក JPG (4K)</button>
+                <button onclick="window.print()" class="bg-gray-800 text-white py-4 rounded-xl font-bold">Print PDF</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // ពិនិត្យ API Key ពេលចាប់ផ្តើម
+        window.onload = () => {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) document.getElementById('apiKey').value = savedKey;
+        };
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKey').value;
+            localStorage.setItem('gemini_api_key', key);
+            const status = document.getElementById('apiStatus');
+            
+            // សាកល្បងពិនិត្យមើល Key ត្រឹមត្រូវ (Simulated validation)
+            if(key.length > 20) {
+                status.innerText = "ជោគជ័យ! API Key ត្រូវបានរក្សាទុក ហើយអាចប្រើប្រាស់បាន។";
+                status.classList.add('text-green-600');
+            } else {
+                status.innerText = "API Key មិនត្រឹមត្រូវ។ សូមពិនិត្យឡើងវិញ។";
+                status.classList.add('text-red-600');
+            }
+        }
+
+        function checkGrade() {
+            const isCorrect = document.getElementById('ans1').checked;
+            const resultDiv = document.getElementById('result');
+            const downloadSection = document.getElementById('downloadSection');
+            
+            resultDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            if (isCorrect) {
+                resultDiv.innerText = "អបអរសាទរ! ចម្លើយត្រឹមត្រូវ 👍";
+                resultDiv.classList.add('bg-green-100', 'text-green-800');
+            } else {
+                resultDiv.innerText = "សូមព្យាយាមម្តងទៀត ❌";
+                resultDiv.classList.add('bg-red-100', 'text-red-800');
+            }
+            downloadSection.classList.remove('hidden');
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('captureArea');
+            html2pdf().set({ margin: 0.5, filename: 'វិញ្ញាសារ_គុណភាពខ្ពស់.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 4, letterRendering: true, useCORS: true } }).from(element).save();
+        }
+
+        function downloadJPG() {
+            html2canvas(document.getElementById('captureArea'), { scale: 4 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'វិញ្ញាសារ_4K.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 1.0);
+                link.click();
+            });
+        }
+    </script>
+</body>
 </html>
