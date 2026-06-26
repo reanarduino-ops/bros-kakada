@@ -41,6 +41,7 @@
                 <input type="text" id="subjectName" placeholder="មុខវិជ្ជា" class="w-full p-4 border rounded-xl">
             </div>
             <button onclick="createExam()" class="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl">បង្កើតវិញ្ញាសារចូលប្រព័ន្ធ</button>
+            <div id="examMessage" class="mt-4 text-center text-lg font-bold hidden"></div>
         </section>
 
         <section id="examContainer" class="space-y-8">
@@ -90,10 +91,16 @@
         function createExam() {
             const creator = document.getElementById('creatorName').value;
             const subject = document.getElementById('subjectName').value;
+            const msgDiv = document.getElementById('examMessage');
+            
+            msgDiv.classList.remove('hidden', 'text-green-600', 'text-red-600');
+            
             if(creator && subject) {
-                alert("វិញ្ញាសារមុខវិជ្ជា " + subject + " បង្កើតដោយ " + creator + " ត្រូវបានរក្សាទុក!");
+                msgDiv.innerText = "វិញ្ញាសារមុខវិជ្ជា " + subject + " បង្កើតដោយ " + creator + " ត្រូវបានរក្សាទុក!";
+                msgDiv.classList.add('text-green-600');
             } else {
-                alert("សូមបំពេញឈ្មោះអ្នកបង្កើត និងមុខវិជ្ជាឱ្យបានគ្រប់គ្រាន់។");
+                msgDiv.innerText = "សូមបំពេញឈ្មោះអ្នកបង្កើត និងមុខវិជ្ជាឱ្យបានគ្រប់គ្រាន់។";
+                msgDiv.classList.add('text-red-600');
             }
         }
 
