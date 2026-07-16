@@ -1,138 +1,379 @@
-<!DOCTYPE html>
-<html lang="km">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ប្រព័ន្ធគ្រប់គ្រងវិញ្ញាសារ</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Khmer+OS+Muol+Light&family=Khmer+OS+Siemreap&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Khmer OS Siemreap', sans-serif; }
-        h1, h2, h3 { font-family: 'Khmer OS Muol Light', serif; }
-        #captureArea { background-color: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-    </style>
-</head>
-<body class="bg-gray-100 min-h-screen p-4 md:p-10">
-    <div id="captureArea" class="max-w-4xl mx-auto border border-gray-200">
-        <!-- ផ្នែកកំណត់ API Key -->
-        <section class="mb-8 p-6 bg-white rounded-2xl border border-gray-200">
-            <h2 class="text-lg mb-4 text-blue-900">ការកំណត់ AI API Key</h2>
-            <p class="text-sm mb-4 text-gray-600">ប្រសិនបើមិនទាន់មាន សូមចុចយកឥតគិតថ្លៃនៅទីនេះ៖ 
-                <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 underline">Google AI Studio</a>
-            </p>
-            <div class="flex gap-4">
-                <input type="password" id="apiKey" placeholder="បញ្ចូល API Key របស់អ្នក" class="w-full p-3 border rounded-xl">
-                <button onclick="saveApiKey()" class="bg-blue-600 text-white px-6 rounded-xl font-bold">រក្សាទុក</button>
-            </div>
-            <div id="apiStatus" class="mt-2 text-sm font-bold"></div>
-        </section>
+import React, { useState } from 'react';
+import { 
+  LayoutGrid, 
+  School, 
+  GraduationCap, 
+  BookOpen, 
+  Calendar, 
+  ClipboardList, 
+  ClipboardCheck, 
+  CheckSquare, 
+  BarChart2, 
+  LineChart, 
+  Download, 
+  Moon, 
+  LogOut,
+  Volume2,
+  X,
+  Plus,
+  CalendarCheck,
+  Users,
+  MoreVertical,
+  Megaphone,
+  Bell,
+  MessageSquare,
+  MessageCircle,
+  Search,
+  ChevronDown,
+  ArrowUpDown,
+  RefreshCw,
+  Layout,
+  Upload,
+  AlertTriangle,
+  Lock,
+  ChevronUp,
+  ChevronDown as ChevronDownIcon,
+  Pencil,
+  Library,
+  FileCheck
+} from 'lucide-react';
 
-        <header class="mb-10 text-center">
-            <h1 class="text-3xl text-blue-900 mb-4">ប្រព័ន្ធគ្រប់គ្រងវិញ្ញាសារ</h1>
-            <p class="text-gray-600">រៀបចំ និងធ្វើតេស្តវិញ្ញាសារដោយស្វ័យប្រវត្តិ</p>
-        </header>
+// ទិន្នន័យសិស្សគំរូ
+const initialStudents = [
+  { id: 1, name: 'កក្កដា', gender: 'ប្រុស', age: 16, phone: '012 345 678', status: 'សកម្ម' },
+  { id: 2, name: 'ដាលី', gender: 'ស្រី', age: 16, phone: '098 765 432', status: 'សកម្ម' },
+  { id: 3, name: 'ស្រីអេន', gender: 'ស្រី', age: 15, phone: '011 222 333', status: 'សកម្ម' },
+  { id: 4, name: 'ស្រីនុត', gender: 'ស្រី', age: 16, phone: '088 999 111', status: 'សកម្ម' },
+];
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('subjects'); // កំណត់បើកផ្ទាំង មុខវិជ្ជា មុនគេ
+  const [showBanner, setShowBanner] = useState(true);
+  const [students, setStudents] = useState(initialStudents);
+
+  const [attendance, setAttendance] = useState({
+    1: 'present', 2: 'present', 3: 'permission', 4: 'absent'
+  });
+
+  const handleAttendanceChange = (studentId, status) => {
+    setAttendance(prev => ({ ...prev, [studentId]: status }));
+  };
+
+  const sidebarItems = [
+    { id: 'dashboard', label: 'ផ្ទាំងគ្រូ', icon: LayoutGrid },
+    { id: 'classes', label: 'ថ្នាក់របស់ខ្ញុំ', icon: School },
+    { id: 'students', label: 'សិស្សក្នុងថ្នាក់', icon: GraduationCap },
+    { id: 'subjects', label: 'មុខវិជ្ជា', icon: BookOpen },
+    { id: 'attendance', label: 'វត្តមាន', icon: Calendar },
+    { id: 'monthly_score', label: 'ពិន្ទុខែ', icon: ClipboardList },
+    { id: 'semester_score', label: 'ពិន្ទុប្រចាំឆមាស', icon: ClipboardCheck },
+    { id: 'tests', label: 'តេស្តដើមគ្រា-ចុងគ្រា', icon: CheckSquare },
+    { id: 'requests', label: 'សំណូមពររៀន', icon: MessageSquare },
+    { id: 'results', label: 'លទ្ធផលសិក្សា', icon: BarChart2 },
+    { id: 'stats', label: 'ស្ថិតិ', icon: LineChart },
+    { id: 'export', label: 'នាំចេញ', icon: Download },
+  ];
+
+  return (
+    <div className="flex h-screen w-full font-sans bg-gray-50 overflow-hidden">
+      
+      {/* Sidebar */}
+      <div className="w-[260px] bg-[#125E40] text-white flex flex-col h-full shrink-0 shadow-2xl z-20">
+        <div className="px-6 py-6">
+          <h1 className="font-bold text-[17px] text-white tracking-wide flex items-center gap-2">
+            <School size={20} className="text-[#20B275]" />
+            វិទ្យាល័យស្តៅសន្តិភាព
+          </h1>
+          <p className="text-xs text-[#A0C4B4] mt-1 ml-7">ប្រព័ន្ធគ្រប់គ្រងសិស្ស</p>
+        </div>
+
+        <div className="px-6 pb-6 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-[#20B275] flex items-center justify-center text-white text-lg font-bold shadow-sm">
+            R
+          </div>
+          <div>
+            <p className="text-sm font-bold text-white leading-tight">Rean Arduino 2026</p>
+            <p className="text-[11px] text-[#A0C4B4] mt-0.5">គ្រូ</p>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto py-2 custom-scrollbar">
+          {sidebarItems.map((item) => {
+            const isActive = activeTab === item.id;
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`w-full flex items-center gap-3 py-3 pl-6 pr-4 mb-1 transition-all ${
+                  isActive 
+                    ? 'bg-[#197551] rounded-r-full mr-6 text-white border-l-[3px] border-[#20B275]' 
+                    : 'text-[#A0C4B4] hover:bg-[#156645] hover:text-white mr-6 rounded-r-full border-l-[3px] border-transparent'
+                }`}
+              >
+                <Icon size={18} className={isActive ? 'text-white' : 'text-[#82B59D]'} />
+                <span className="text-[13px] font-medium tracking-wide">{item.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="p-4 mt-auto border-t border-[#197551]">
+          <button className="w-full flex items-center gap-3 py-2.5 px-4 rounded-lg text-[#A0C4B4] hover:bg-[#156645] hover:text-white transition-all text-sm mb-1">
+            <Moon size={18} className="text-[#82B59D]" />
+            <span>ផ្ទាំងងងឹត</span>
+          </button>
+          <button className="w-full flex items-center gap-3 py-2.5 px-4 rounded-lg text-[#A0C4B4] hover:bg-[#156645] hover:text-white transition-all text-sm mb-1">
+            <MessageCircle size={18} className="text-[#82B59D]" />
+            <span>មតិកែលម្អ</span>
+          </button>
+          <button className="w-full flex items-center gap-3 py-2.5 px-4 rounded-lg text-[#A0C4B4] hover:bg-[#156645] hover:text-white transition-all text-sm">
+            <LogOut size={18} className="text-[#82B59D]" />
+            <span>ចាកចេញ</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 h-full flex flex-col bg-gradient-to-br from-[#E6F0FA] via-[#F4E9F7] to-[#FBE7EE] overflow-y-auto relative p-6 md:p-8">
         
-        <section class="mb-10 p-8 border border-blue-100 rounded-2xl bg-blue-50/50">
-            <h2 class="text-xl mb-6 text-blue-900">ដាក់បញ្ចូលវិញ្ញាសារថ្មី</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <input type="text" id="creatorName" placeholder="ឈ្មោះអ្នកបង្កើត" class="w-full p-4 border rounded-xl">
-                <input type="text" id="subjectName" placeholder="មុខវិជ្ជា" class="w-full p-4 border rounded-xl">
+        {showBanner && (
+          <div className="bg-[#EAF3FF] border border-[#CDE0FF] text-[#1D4ED8] px-5 py-3 rounded-xl mb-6 flex justify-between items-center shadow-sm w-full max-w-5xl mx-auto relative">
+            <div className="flex items-center gap-3 text-[13px]">
+              <Megaphone size={18} className="text-[#3B82F6]" />
+              <span>
+                <strong className="font-semibold mr-1">ប្រើប្រាស់ឥតគិតថ្លៃ</strong> 
+                <br className="sm:hidden" />
+                ប្រើប្រាស់ kroudigital4.0 ដោយឥតគិតថ្លៃ សម្រាប់ឆ្នាំសិក្សា ២០២៤-២០២៥ ។
+              </span>
             </div>
-            <button onclick="createExam()" class="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl">បង្កើតវិញ្ញាសារចូលប្រព័ន្ធ</button>
-            <div id="examMessage" class="mt-4 text-center text-lg font-bold hidden"></div>
-        </section>
+            <div className="flex items-center gap-4">
+              <button onClick={() => setShowBanner(false)} className="text-[#93B1F8] hover:text-[#1D4ED8] transition-colors">
+                <X size={16} />
+              </button>
+              <div className="relative cursor-pointer text-[#3B82F6]">
+                <Bell size={20} />
+                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 border-2 border-white rounded-full flex items-center justify-center text-[8px] font-bold text-white">1</span>
+              </div>
+            </div>
+          </div>
+        )}
 
-        <section id="examContainer" class="space-y-8">
-            <div class="bg-white border border-gray-200 p-8 rounded-2xl shadow-sm">
-                <h3 class="text-lg mb-6 text-gray-800">សំណួរទី ១៖ តើ ៥ + ៥ ស្មើនឹងប៉ុន្មាន?</h3>
-                <div class="space-y-4">
-                    <label class="flex items-center space-x-4 p-5 border rounded-xl cursor-pointer">
-                        <input type="radio" name="q1" value="8" class="w-5 h-5"> <span>៨</span>
-                    </label>
-                    <label class="flex items-center space-x-4 p-5 border rounded-xl cursor-pointer">
-                        <input type="radio" name="q1" value="10" id="ans1" class="w-5 h-5"> <span>១០</span>
-                    </label>
-                </div>
-                <button onclick="checkGrade()" class="mt-8 bg-green-600 text-white px-10 py-3 rounded-xl font-bold">ពិនិត្យលទ្ធផល</button>
+        <div className="w-full max-w-5xl mx-auto">
+          {activeTab === 'subjects' ? (
+            <SubjectsView />
+          ) : activeTab === 'classes' ? (
+            <ClassesView />
+          ) : activeTab === 'dashboard' ? (
+            <DashboardView />
+          ) : activeTab === 'students' ? (
+            <StudentsInfoView />
+          ) : (
+            <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-10 text-center text-gray-500 shadow-sm border border-white">
+              កំពុងអភិវឌ្ឍន៍ផ្ទាំងនេះ...
             </div>
-            <div id="result" class="text-center text-xl py-6 rounded-xl hidden"></div>
-            
-            <div id="downloadSection" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-                <button onclick="downloadPDF()" class="bg-red-600 text-white py-4 rounded-xl font-bold">ទាញយក PDF</button>
-                <button onclick="downloadJPG()" class="bg-purple-600 text-white py-4 rounded-xl font-bold">ទាញយក JPG (4K)</button>
-                <button onclick="window.print()" class="bg-gray-800 text-white py-4 rounded-xl font-bold">Print PDF</button>
-            </div>
-        </section>
+          )}
+        </div>
+      </div>
     </div>
+  );
+}
 
-    <script>
-        window.onload = () => {
-            const savedKey = localStorage.getItem('gemini_api_key');
-            if (savedKey) document.getElementById('apiKey').value = savedKey;
-        };
+// ---------------- ផ្ទាំង "មុខវិជ្ជា" ១០០% ដូចរូបភាពថ្មី ----------------
+function SubjectsView() {
+  return (
+    <div className="animate-fade-in pb-10">
+      
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-[20px] font-bold text-gray-800">មុខវិជ្ជា</h1>
+        <button className="bg-[#AE78EE] hover:bg-[#9B5EE4] text-white px-5 py-2.5 rounded-[10px] flex items-center gap-2 text-[13px] font-medium transition-all shadow-sm">
+          <Download size={16} />
+          ទាញយក Template
+        </button>
+      </div>
 
-        function saveApiKey() {
-            const key = document.getElementById('apiKey').value;
-            localStorage.setItem('gemini_api_key', key);
-            const status = document.getElementById('apiStatus');
-            if(key.length > 20) {
-                status.innerText = "ជោគជ័យ! API Key ត្រូវបានរក្សាទុក។";
-                status.classList.remove('text-red-600');
-                status.classList.add('text-green-600');
-            } else {
-                status.innerText = "API Key មិនត្រឹមត្រូវ។";
-                status.classList.remove('text-green-600');
-                status.classList.add('text-red-600');
-            }
-        }
+      {/* មុខវិជ្ជាខែ Section */}
+      <div className="mb-6">
+        <div className="flex justify-between items-end mb-3">
+          <div className="flex items-center gap-2">
+            <Calendar size={18} className="text-[#9C64E8]" />
+            <h2 className="text-[15px] font-bold text-gray-800">មុខវិជ្ជាខែ</h2>
+            <span className="bg-[#F3E8FF] text-[#8B5CF6] px-2.5 py-0.5 rounded-full text-[11px] font-semibold border border-[#E9D5FF]">0 មុខវិជ្ជា</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button className="bg-[#6B4BEA] hover:bg-[#5839C9] text-white px-4 py-1.5 rounded-lg flex items-center gap-1.5 text-[13px] transition-colors shadow-sm font-medium">
+              <Plus size={14} /> បន្ថែម
+            </button>
+            <button className="bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 px-4 py-1.5 rounded-lg flex items-center gap-1.5 text-[13px] transition-colors shadow-sm font-medium">
+              <Pencil size={14} /> កែប្រែ
+            </button>
+          </div>
+        </div>
 
-        function createExam() {
-            const creator = document.getElementById('creatorName').value;
-            const subject = document.getElementById('subjectName').value;
-            const msgDiv = document.getElementById('examMessage');
-            
-            msgDiv.classList.remove('hidden', 'text-green-600', 'text-red-600');
-            
-            if(creator && subject) {
-                msgDiv.innerText = "វិញ្ញាសារមុខវិជ្ជា " + subject + " បង្កើតដោយ " + creator + " ត្រូវបានរក្សាទុក!";
-                msgDiv.classList.add('text-green-600');
-            } else {
-                msgDiv.innerText = "សូមបំពេញឈ្មោះអ្នកបង្កើត និងមុខវិជ្ជាឱ្យបានគ្រប់គ្រាន់។";
-                msgDiv.classList.add('text-red-600');
-            }
-        }
+        <div className="bg-white rounded-[16px] shadow-sm border border-gray-100 overflow-hidden">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-[#6B4BEA] text-white text-[13px]">
+                <th className="py-3 px-6 font-medium w-20 text-center">លំដាប់</th>
+                <th className="py-3 px-6 font-medium">មុខវិជ្ជា</th>
+                <th className="py-3 px-6 font-medium text-center">ថ្នាក់</th>
+                <th className="py-3 px-6 font-medium text-center">ពិន្ទុអតិបរមា</th>
+                <th className="py-3 px-6 font-medium text-center">មេគុណ</th>
+                <th className="py-3 px-6 font-medium text-center">កំណត់</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="6" className="py-14 text-center">
+                  <BookOpen size={36} className="mx-auto text-gray-300 mb-2" strokeWidth={1} />
+                  <p className="text-gray-400 text-[13px]">គ្មានមុខវិជ្ជា</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-        function checkGrade() {
-            const isCorrect = document.getElementById('ans1').checked;
-            const resultDiv = document.getElementById('result');
-            const downloadSection = document.getElementById('downloadSection');
-            
-            resultDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
-            if (isCorrect) {
-                resultDiv.innerText = "អបអរសាទរ! ចម្លើយត្រឹមត្រូវ 👍";
-                resultDiv.classList.add('bg-green-100', 'text-green-800');
-            } else {
-                resultDiv.innerText = "សូមព្យាយាមម្តងទៀត ❌";
-                resultDiv.classList.add('bg-red-100', 'text-red-800');
-            }
-            downloadSection.classList.remove('hidden');
-        }
+      {/* មុខវិជ្ជាឆមាស Section */}
+      <div className="mb-6">
+        <div className="flex justify-between items-end mb-3">
+          <div className="flex items-center gap-2">
+            <Library size={18} className="text-[#10B981]" />
+            <h2 className="text-[15px] font-bold text-gray-800">មុខវិជ្ជាឆមាស</h2>
+            <span className="bg-[#E0E7FF] text-[#4F46E5] px-2.5 py-0.5 rounded-full text-[11px] font-semibold border border-[#C7D2FE]">0 មុខវិជ្ជា</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button className="bg-[#6B4BEA] hover:bg-[#5839C9] text-white px-4 py-1.5 rounded-lg flex items-center gap-1.5 text-[13px] transition-colors shadow-sm font-medium">
+              <Plus size={14} /> បន្ថែម
+            </button>
+            <button className="bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 px-4 py-1.5 rounded-lg flex items-center gap-1.5 text-[13px] transition-colors shadow-sm font-medium">
+              <Pencil size={14} /> កែប្រែ
+            </button>
+          </div>
+        </div>
 
-        function downloadPDF() {
-            const element = document.getElementById('captureArea');
-            html2pdf().set({ margin: 0.5, filename: 'វិញ្ញាសារ_គុណភាពខ្ពស់.pdf', image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 4, letterRendering: true, useCORS: true } }).from(element).save();
-        }
+        <div className="bg-white rounded-[16px] shadow-sm border border-gray-100 overflow-hidden">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-[#6B4BEA] text-white text-[13px]">
+                <th className="py-3 px-6 font-medium w-20 text-center">លំដាប់</th>
+                <th className="py-3 px-6 font-medium">មុខវិជ្ជា</th>
+                <th className="py-3 px-6 font-medium text-center">ថ្នាក់</th>
+                <th className="py-3 px-6 font-medium text-center">ពិន្ទុអតិបរមា</th>
+                <th className="py-3 px-6 font-medium text-center">មេគុណ</th>
+                <th className="py-3 px-6 font-medium text-center">កំណត់</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="6" className="py-14 text-center">
+                  <BookOpen size={36} className="mx-auto text-gray-300 mb-2" strokeWidth={1} />
+                  <p className="text-gray-400 text-[13px]">គ្មានមុខវិជ្ជា</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-        function downloadJPG() {
-            html2canvas(document.getElementById('captureArea'), { scale: 4 }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'វិញ្ញាសារ_4K.jpg';
-                link.href = canvas.toDataURL('image/jpeg', 1.0);
-                link.click();
-            });
-        }
-    </script>
-</body>
-</html>
+      {/* តេស្តស្តង់ដារ Section */}
+      <div>
+        <div className="flex justify-between items-start mb-3">
+          <div>
+            <h2 className="text-[15px] font-bold text-gray-800 flex items-center gap-2">
+              <FileCheck size={18} className="text-pink-500" />
+              តេស្តស្តង់ដារ (មុខវិជ្ជា + ពិន្ទុអតិបរមា) — មើលតែ
+            </h2>
+            <p className="text-[12px] text-gray-400 mt-1.5">
+              តេស្តស្តង់ដារ/ចុងឆ្នាំ (ជុំទី១) — មិនអាចត្រូវបានកែប្រែដោយគ្រូធម្មតា — តែកែដោយ owner/admin។
+            </p>
+          </div>
+          <button className="bg-white border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg flex items-center gap-2 text-[13px] shadow-sm font-medium hover:bg-gray-50 transition-colors">
+            តេស្តដើមឆ្នាំ <ChevronDown size={14} className="text-gray-400" />
+          </button>
+        </div>
+
+        <div className="bg-white rounded-[16px] shadow-sm border border-gray-100 min-h-[140px] flex flex-col items-center justify-center">
+          <ClipboardCheck size={36} className="text-gray-300 mb-2" strokeWidth={1} />
+          <p className="text-gray-400 text-[13px]">មិនទាន់មានទិន្នន័យ</p>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+// ---------------- ផ្ទាំងផ្សេងៗដែលបានរក្សាទុក (លាក់ខាងក្រោម) ----------------
+function ClassesView() {
+  return (
+    <div className="animate-fade-in">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-[22px] font-bold text-gray-800 flex items-center gap-2">🏫 ថ្នាក់របស់ខ្ញុំ</h1>
+          <p className="text-gray-500 mt-1 text-[13px]">សរុប 0 ថ្នាក់</p>
+        </div>
+        <button className="bg-[#2563EB] hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg flex items-center gap-2 text-[13px] font-medium transition-all shadow-sm">
+          <Plus size={16} />បង្កើតថ្នាក់
+        </button>
+      </div>
+      <div className="bg-white/80 backdrop-blur-md border border-white rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] p-12 min-h-[400px] flex flex-col items-center justify-center text-center">
+        <div className="text-[#3B82F6] mb-5 bg-blue-50/50 p-3 rounded-2xl">
+          <School size={36} strokeWidth={1.5} />
+        </div>
+        <h2 className="text-[17px] font-bold text-gray-800 mb-3">បង្កើតថ្នាក់ដំបូងរបស់អ្នក</h2>
+        <p className="text-gray-500 text-[13.5px] mb-8 max-w-md leading-relaxed">ចាប់ផ្តើមដោយបង្កើតថ្នាក់ &rarr; បន្ថែមសិស្ស &rarr; ស្រង់ពិន្ទុ &rarr; បោះពុម្ព<br />សន្លឹកពិន្ទុ ។</p>
+        <button className="bg-[#2563EB] hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 text-[13px] font-medium transition-all shadow-md transform hover:-translate-y-0.5">
+          <Plus size={16} />បង្កើតថ្នាក់ដំបូង
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function DashboardView() {
+  return (
+    <div className="animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-[22px] font-bold text-gray-800 flex items-center gap-2">សួស្តី Rean Arduino 2026 👋</h1>
+        <p className="text-gray-500 mt-0.5 text-sm">គ្រូបង្រៀន</p>
+      </div>
+      <div className="bg-white/80 backdrop-blur-md border border-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.03)] p-10 mb-10 flex flex-col items-center justify-center relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-50"></div>
+        <div className="mb-5 text-[#3B82F6] bg-blue-50 p-4 rounded-2xl"><School size={32} strokeWidth={1.5} /></div>
+        <h2 className="text-xl font-bold text-gray-800 mb-2 flex items-center gap-2">ស្វាគមន៍មកកាន់ វិទ្យាល័យស្តៅសន្តិភាព! 🎉</h2>
+        <p className="text-gray-400 text-sm mb-8">ចាប់ផ្តើមក្នុង ៣ ជំហានសាមញ្ញ</p>
+        <div className="space-y-4 mb-8 text-[14px] text-gray-600 w-full max-w-[280px]">
+          <div className="flex items-center gap-4 bg-white/50 p-2 rounded-lg">
+            <div className="w-6 h-6 rounded-full bg-[#EBF3FF] text-[#2563EB] flex items-center justify-center text-xs font-bold shrink-0">១</div>
+            <span>បង្កើតថ្នាក់របស់អ្នក</span>
+          </div>
+          <div className="flex items-center gap-4 bg-white/50 p-2 rounded-lg">
+            <div className="w-6 h-6 rounded-full bg-[#EBF3FF] text-[#2563EB] flex items-center justify-center text-xs font-bold shrink-0">២</div>
+            <span>បន្ថែមសិស្សចូលថ្នាក់</span>
+          </div>
+          <div className="flex items-center gap-4 bg-white/50 p-2 rounded-lg">
+            <div className="w-6 h-6 rounded-full bg-[#EBF3FF] text-[#2563EB] flex items-center justify-center text-xs font-bold shrink-0">៣</div>
+            <span>ស្រង់ពិន្ទុ → បោះពុម្ពសន្លឹក</span>
+          </div>
+        </div>
+        <button className="bg-[#2563EB] text-white px-8 py-3 rounded-xl flex items-center gap-2 text-sm font-medium transition-all shadow-md"><Plus size={18} />បង្កើតថ្នាក់ដំបូង</button>
+      </div>
+    </div>
+  );
+}
+
+function StudentsInfoView() {
+  return (
+    <div className="animate-fade-in flex flex-col h-[calc(100vh-140px)]">
+      <div className="bg-[#FFF4F2] border border-[#FBE3E3] rounded-[20px] p-4 flex flex-col xl:flex-row items-center justify-between gap-4 mb-4 shadow-sm w-full">
+        <div className="flex items-center gap-4 shrink-0">
+          <h1 className="text-[18px] font-bold text-[#1E3A8A] flex items-center gap-2"><GraduationCap size={24} className="text-[#3B82F6]" />ព័ត៌មានសិស្ស</h1>
+        </div>
+      </div>
+      <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 flex items-center justify-center">
+        <p className="text-gray-400">ទិន្នន័យសិស្សនៅទីនេះ...</p>
+      </div>
+    </div>
+  );
+}
